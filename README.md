@@ -13,3 +13,14 @@ Este es el backend de la aplicación **Library App**, desarrollado con **NestJS*
 
 ```bash
 git clone https://github.com/AngeloJS04/library-app-back.git
+
+### 2. Instala las dependencias
+
+Entra en la carpeta del proyecto e instala las dependencias con npm o yarn:
+
+```bash
+cd library-app-back
+npm install
+
+
+
