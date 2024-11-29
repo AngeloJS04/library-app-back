@@ -13,3 +13,69 @@ Este es el backend de la aplicación **Library App**, desarrollado con **NestJS*
 
 ```bash
 git clone https://github.com/AngeloJS04/library-app-back.git
+```
+
+### 2. Instala las dependencias
+
+Entra en la carpeta del proyecto e instala las dependencias con npm o yarn:
+
+```bash
+cd library-app-back
+npm install
+```
+
+
+### 3. Configura las variables de entorno
+
+# Variables de conexión a la base de datos
+````bash
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=tu_usuario
+DB_PASSWORD=tu_contraseña
+DB_NAME=library_app
+````
+
+# Variables de JWT
+JWT_SECRET=tu_clave_secreta
+JWT_EXPIRATION_TIME=3600s
+
+# Puerto donde corre la app
+PORT=4000
+
+### 4. Inicia la aplicación
+
+```bash
+npm run start:dev
+```
+
+## Endpoints
+
+### 1. **Autenticación**
+
+#### POST `/auth/login`
+
+Autenticación de usuario.
+
+**Body:**
+```json
+{
+  "email": "library@test.com",
+  "password": "contraseña"
+}
+
+```
+### 5. **Acceso a Swagger UI**
+
+Para obtener más detalles sobre todos los endpoints disponibles en la API y probarlos directamente, puedes acceder a la interfaz de **Swagger UI** de la aplicación.
+
+Una vez que la aplicación esté corriendo en `http://localhost:4000`, abre la siguiente URL en tu navegador: 
+
+```bash 
+http://localhost:4000/api
+````
+En esta interfaz, podrás ver todos los endpoints disponibles, sus parámetros, respuestas y ejemplos de uso.
+
+
+
+
