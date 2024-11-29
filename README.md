@@ -49,5 +49,20 @@ PORT=4000
 npm run start:dev
 ```
 
+## Endpoints
+
+### 1. **Autenticación**
+
+#### POST `/auth/login`
+
+Autenticación de usuario.
+
+**Body:**
+```json
+{
+  "username": "usuario",
+  "password": "contraseña"
+}
+
 
 
