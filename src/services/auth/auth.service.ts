@@ -80,17 +80,6 @@ export class AuthService {
 
     }
 
-    async logout(response: Response): Promise<void | { message: string }> {
-        try {
-            response.cookie('access_token', '', {
-                httpOnly: true,
-                expires: new Date(0),
-            });
-            return { message: 'Logged out successfully' };
-        } catch (error) {
-            throw new UnauthorizedException('Failed to log out');
-        }
-    }
 
     private generateJwt(user: UserEntity): string {
         const payload = { username: user.username, email: user.email, id: user.id };
