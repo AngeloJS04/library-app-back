@@ -60,7 +60,7 @@ Autenticación de usuario.
 **Body:**
 ```json
 {
-  "username": "usuario",
+  "email": "library@test.com",
   "password": "contraseña"
 }
 
