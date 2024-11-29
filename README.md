@@ -1,99 +1,153 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+Library App Backend
+Este es el backend de la aplicación Library App, desarrollado con NestJS. La aplicación proporciona funcionalidades de autenticación y permite gestionar libros en una biblioteca. Los usuarios pueden buscar libros, filtrarlos por nombre, año, género o autor, y ver los detalles de un libro específico.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Requisitos
+Node.js (version 14.x o superior)
+NestJS CLI (opcional, pero recomendado para desarrollo)
+Instalación
+1. Clona el repositorio
+bash
+Copy code
+git clone https://github.com/AngeloJS04/library-app-back.git
+2. Instala las dependencias
+Entra en la carpeta del proyecto e instala las dependencias con npm o yarn:
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+bash
+Copy code
+cd library-app-back
+npm install
+o si usas yarn:
 
-## Description
+bash
+Copy code
+yarn install
+3. Configura las variables de entorno
+Crea un archivo .env en la raíz del proyecto y agrega las siguientes variables de entorno:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+env
+Copy code
+# Variables de conexión a la base de datos
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=tu_usuario
+DB_PASSWORD=tu_contraseña
+DB_NAME=library_app
 
-## Project setup
+# Variables de JWT
+JWT_SECRET=tu_clave_secreta
+JWT_EXPIRATION_TIME=3600s
 
-```bash
-$ npm install
-```
+# Puerto donde corre la app
+PORT=4000
+4. Inicia la aplicación
+Inicia la aplicación de backend en modo de desarrollo con:
 
-## Compile and run the project
+bash
+Copy code
+npm run start:dev
+Esto hará que la aplicación esté disponible en http://localhost:4000.
 
-```bash
-# development
-$ npm run start
+Endpoints
+1. Autenticación
+POST /auth/login: Autenticación de usuario.
 
-# watch mode
-$ npm run start:dev
+Body:
 
-# production mode
-$ npm run start:prod
-```
+json
+Copy code
+{
+  "username": "usuario",
+  "password": "contraseña"
+}
+Respuesta:
 
-## Run tests
+json
+Copy code
+{
+  "access_token": "jwt_token"
+}
+2. Libros
+Buscar libros
+GET /books: Buscar libros con filtros opcionales por nombre, año, género o autor.
 
-```bash
-# unit tests
-$ npm run test
+Query Parameters:
 
-# e2e tests
-$ npm run test:e2e
+name: Nombre del libro (opcional).
+year: Año de publicación (opcional).
+genre: Género del libro (opcional).
+author: Autor del libro (opcional).
+Ejemplo de URL: /books?name=JavaScript&author=Douglas+Adams
 
-# test coverage
-$ npm run test:cov
-```
+Respuesta:
 
-## Deployment
+json
+Copy code
+[
+  {
+    "id": 1,
+    "name": "JavaScript: The Good Parts",
+    "author": "Douglas Crockford",
+    "year": 2008,
+    "genre": "Programming"
+  },
+  {
+    "id": 2,
+    "name": "JavaScript for Beginners",
+    "author": "John Doe",
+    "year": 2015,
+    "genre": "Programming"
+  }
+]
+Ver detalles de un libro
+GET /books/:id: Obtener los detalles de un libro específico.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Respuesta:
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+json
+Copy code
+{
+  "id": 1,
+  "name": "JavaScript: The Good Parts",
+  "author": "Douglas Crockford",
+  "year": 2008,
+  "genre": "Programming",
+  "description": "A deep dive into the core features of JavaScript."
+}
+3. Usuarios
+Crear usuario
+POST /users: Crear un nuevo usuario (para registro).
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+Body:
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+json
+Copy code
+{
+  "username": "nuevo_usuario",
+  "password": "contraseña_segura",
+  "email": "usuario@dominio.com"
+}
+Respuesta:
 
-## Resources
+json
+Copy code
+{
+  "id": 1,
+  "username": "nuevo_usuario",
+  "email": "usuario@dominio.com"
+}
+Obtener usuarios
+GET /users: Obtener una lista de todos los usuarios registrados.
+4. Manejo de Errores
+El sistema utiliza códigos de estado HTTP estándar para indicar el estado de las respuestas:
 
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+200 OK: La solicitud fue exitosa.
+201 Created: El recurso se creó con éxito.
+400 Bad Request: La solicitud está mal formada o le faltan parámetros.
+401 Unauthorized: El token JWT no es válido o no se proporcionó.
+404 Not Found: El recurso solicitado no fue encontrado.
+500 Internal Server Error: Error en el servidor.
+Tecnologías
+NestJS: Framework de Node.js para crear aplicaciones eficientes y escalables.
+TypeORM: ORM para TypeScript que facilita la interacción con bases de datos.
+JWT: JSON Web Tokens para la autenticación.
+PostgreSQL: Base de datos relacional.
