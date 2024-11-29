@@ -12,7 +12,7 @@ export class AuthCredentialDto {
     @IsString()
     @MinLength(4)
     @MaxLength(20)
-    username: string;
+    username?: string;
 
 
     @ApiProperty({

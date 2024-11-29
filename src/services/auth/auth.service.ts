@@ -5,6 +5,7 @@ import { UserEntity } from 'src/database/entities/user.entity';
 import { AuthCredentialDto } from 'src/dto/auth-credentials';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { Response } from 'express'
 
 @Injectable()
 export class AuthService {
@@ -15,10 +16,10 @@ export class AuthService {
     ) { }
 
     async validateUser(payload: AuthCredentialDto): Promise<UserEntity | null> {
-        const { username, password, email } = payload
+        const { password, email } = payload
 
         const user = await this.authRepository.findOne({
-            where: { username }
+            where: { email }
         });
         if (user && (await bcrypt.compare(password, user.password))) {
             return user
@@ -26,15 +27,20 @@ export class AuthService {
         return null
     }
 
-    async signIn(payload: AuthCredentialDto): Promise<{ accessToken: string }> {
-        const user = await this.validateUser(payload)
-        if (!user) throw new UnauthorizedException()
+    async meService(user: UserEntity): Promise<Partial<UserEntity> | null> {
+        try {
+            const payload: Partial<UserEntity> = {
 
-        const accessToken: string = this.jwtService.sign(payload);
-        return { accessToken }
-
-    }
-
+                email: user.email,
+                username: user.username,
+                id: user.id,
+                createdAt: user.createdAt,
+            };
+            return payload;
+        } catch (error) {
+            return null;
+        }
+    };
     async signUp(payload: AuthCredentialDto): Promise<void> {
         const { username, password, email } = payload;
         const salt = await bcrypt.genSalt();
@@ -60,5 +66,35 @@ export class AuthService {
 
     }
 
+    async signIn(payload: AuthCredentialDto): Promise<{ accessToken?: string, error?: { message: string } }> {
+        const user = await this.validateUser(payload)
+
+        if (!user) return {
+            error: {
+                message: "User not found or invalid credentials"
+            }
+        }
+        const accessToken = this.generateJwt(user);
+
+        return { accessToken }
+
+    }
+
+    async logout(response: Response): Promise<void | { message: string }> {
+        try {
+            response.cookie('access_token', '', {
+                httpOnly: true,
+                expires: new Date(0),
+            });
+            return { message: 'Logged out successfully' };
+        } catch (error) {
+            throw new UnauthorizedException('Failed to log out');
+        }
+    }
+
+    private generateJwt(user: UserEntity): string {
+        const payload = { username: user.username, email: user.email, id: user.id };
+        return this.jwtService.sign(payload);
+    }
 
 }

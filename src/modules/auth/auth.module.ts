@@ -4,6 +4,7 @@ import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from 'src/controllers/auth/auth.controller';
 import { UserEntity } from 'src/database/entities/user.entity';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { AuthService } from 'src/services/auth/auth.service';
 import { JwtStrategy } from 'src/strategies/jwt.strategy';
 
@@ -12,10 +13,10 @@ import { JwtStrategy } from 'src/strategies/jwt.strategy';
         PassportModule,
         JwtModule.register({
             secret: process.env.JWT_SECRET,
-            signOptions: { expiresIn: '3600s' },
+            signOptions: { expiresIn: '1h' },
         }),
         TypeOrmModule.forFeature([UserEntity])],
-    providers: [AuthService, JwtStrategy],
+    providers: [AuthService, JwtStrategy, JwtAuthGuard],
     controllers: [AuthController],
     exports: [JwtStrategy, PassportModule]
 })

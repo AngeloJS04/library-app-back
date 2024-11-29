@@ -5,6 +5,12 @@ import { BookEntity } from 'src/database/entities/book.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from 'src/database/entities/user.entity';
+import { paginate } from 'src/helpers/pagination.helper';
+import { applyFilter } from 'src/helpers/filter.helper';
+import { SearchBooksDto } from 'src/dto/search-book.dto';
+import { BookRepository } from 'src/repository/book.repository';
+import { plainToInstance } from 'class-transformer';
+
 
 @Injectable()
 export class BooksService {
@@ -12,7 +18,9 @@ export class BooksService {
     @InjectRepository(BookEntity)
     private booksRepository: Repository<BookEntity>,
     @InjectRepository(UserEntity)
-    private usersRepository: Repository<UserEntity>
+    private usersRepository: Repository<UserEntity>,
+    private customReposity: BookRepository,
+
   ) { }
 
   async create(createBookDto: CreateBookDto): Promise<BookEntity> {
@@ -56,54 +64,39 @@ export class BooksService {
   async findAll(page: number = 1, limit: number = 10): Promise<any> {
 
     const queryBuilder = this.booksRepository.createQueryBuilder('book');
-    return this.paginate(queryBuilder, page, limit);
+    return paginate(queryBuilder, page, limit);
 
   }
 
 
-  async findBooks(filters: { author?: string; year?: number; genre?: string }, page: number = 1, limit: number = 10): Promise<any> {
-    const queryBuilder = this.booksRepository.createQueryBuilder('book');
-
-    for (const [filterType, value] of Object.entries(filters)) {
-      if (value) {
-        await this.applyFilter(queryBuilder, filterType, value);
-      }
-    }
-
-    return this.paginate(queryBuilder, page, limit);
+  async getBookByName(name: string): Promise<BookEntity[]> {
+    const books = await this.customReposity.getAllBooksByName(name);
+    const bookPlain = plainToInstance(BookEntity, books);
+    return bookPlain;
   }
 
-  private async paginate(queryBuilder, page: number = 1, limit: number = 10) {
-    const take = limit;
-    const skip = (page - 1) * take;
-
-    queryBuilder.take(take).skip(skip);
-
-    const [data, total] = await queryBuilder.getManyAndCount();
-    const totalPages = Math.ceil(total / take);
-
-    return {
-      data,
-      pagination: {
-        totalItems: total,
-        totalPages,
-        currentPage: page,
-        pageSize: take,
-      },
-    };
+  async getBookByAuthor(author: string): Promise<BookEntity[]> {
+    const books = await this.customReposity.getAllBooksByAuthor(author);
+    console.log(books)
+    const bookPlain = plainToInstance(BookEntity, books);
+    return bookPlain;
+  }
+  async getBookByYear(year: number): Promise<BookEntity[]> {
+    const books = await this.customReposity.getAllBooksByYear(year);
+    const bookPlain = plainToInstance(BookEntity, books);
+    return bookPlain;
+  }
+  async getBookByGenre(genre: string): Promise<BookEntity[]> {
+    const books = await this.customReposity.getAllBooksByGenre(genre);
+    const bookPlain = plainToInstance(BookEntity, books);
+    return bookPlain;
   }
 
-  async applyFilter(queryBuilder, filterType: string, value: any) {
-    switch (filterType) {
-      case 'author':
-        return queryBuilder.andWhere('book.author LIKE :author', { author: `%${value}%` });
-      case 'year':
-        return queryBuilder.andWhere('book.year = :year', { year: value });
-      case 'genre':
-        return queryBuilder.andWhere('book.genre LIKE :genre', { genre: `%${value}%` });
-      default:
-        return queryBuilder;
-    }
+
+  async SearchFilterBook(filterType: SearchBooksDto): Promise<BookEntity[] | string> {
+    if (filterType.author) return this.getBookByAuthor(filterType.author)
+    if (filterType.year) return this.getBookByYear(filterType.year)
+    if (filterType.genre) return this.getBookByGenre(filterType.genre)
   }
 
 
