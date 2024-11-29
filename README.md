@@ -64,5 +64,18 @@ Autenticación de usuario.
   "password": "contraseña"
 }
 
+```
+### 5. **Acceso a Swagger UI**
+
+Para obtener más detalles sobre todos los endpoints disponibles en la API y probarlos directamente, puedes acceder a la interfaz de **Swagger UI** de la aplicación.
+
+Una vez que la aplicación esté corriendo en `http://localhost:4000`, abre la siguiente URL en tu navegador: 
+
+```bash 
+http://localhost:4000/api
+````
+En esta interfaz, podrás ver todos los endpoints disponibles, sus parámetros, respuestas y ejemplos de uso.
+
+
 
 
