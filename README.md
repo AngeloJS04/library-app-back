@@ -28,11 +28,13 @@ npm install
 ### 3. Configura las variables de entorno
 
 # Variables de conexión a la base de datos
+````bash
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=tu_usuario
 DB_PASSWORD=tu_contraseña
 DB_NAME=library_app
+````
 
 # Variables de JWT
 JWT_SECRET=tu_clave_secreta
